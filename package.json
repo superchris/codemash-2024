@@ -1,0 +1,25 @@
+{
+  "name": "elixirconf-2022",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run watch & live-server .",
+    "watch": "marp --watch index.md -o index.html",
+    "build": "marp index.md -o index.html"
+  },
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/launchscout/elixirconf_2022_livestate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/launchscout/elixirconf_2022_livestate/issues"
+  },
+  "homepage": "https://github.com/launchscout/elixirconf_2022_livestate#readme",
+  "description": "",
+  "devDependencies": {
+    "@marp-team/marp-cli": "^3.1.0",
+    "live-server": "^1.1.0"
+  }
+}
