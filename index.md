@@ -66,14 +66,21 @@ Chris Nelson
 # In the beginning there was CGI
 - Scripts that printed out HTML
 - Perl, VB, PL/SQL, you name it!
-- Things got out of control rather quickly....
+- This was ok for little tiny things
+- For large applications, not so much
+
+---
+
+# Reasons
+- HTTP is stateless, but applications are not
+- Code organization was pretty random :(
+- Perl is a write only language ;)
 
 ---
 
 # On the second day there was MVC
 - Finally we could organize our code
 - A place for everything
-- A little clunky perhaps
 - Java, .NET
 
 ---
@@ -81,21 +88,20 @@ Chris Nelson
 # On the third day DHH created Rails
 - Convention over configuration
 - Really productive language
-- We could go faster
+- State lives in the DB
+- We could build apps really fast
 
 ---
 
 # And it was good..
-
+## We were pretty productive at building web apps
 ---
 
 # And then AJAX happened
-
----
-
-# And it was terrible...
-- Wads of JQuery all over the place
-- Then the cycle of JS frameworks began
+- The user experience got a lot better
+- The developer experiences, not so much..
+- We now had massive piles of JS to deal with
+- And thus began the cycle..
 
 ---
 
@@ -121,30 +127,47 @@ Chris Nelson
 
 ---
 
-# The actual problem: We are building distributed systems
-## And building distributed systems is hard...
+# What's the actual problem 
+- HTTP is stateless, our applications have state
+- With server-side MVC we had a place for our state
+- Now it lives in (at least) two places..
 
 ---
 
-# But y tho?
+# Congratulations! We are building distributed systems
+## And building distributed systems is hard...
 - Shared mutable state is hard
 - Across the network boundary it is almost impossible
 - For emphasis, see CORBA
 
 ---
 
-# So let's talk about state...
+# So far we've mostly talked about bad ideas
 
 ---
 
-# We have a great design pattern for managing state
-- We just need to describe it
-- Redux, Elm, GenServers
+# Let's talk about some good ones!
+
+---
+
+# Let's talk about managing state...
+
+---
+
+## We see the same Design Pattern again and again
+- Redux
+- Elm
+- GenServers
+- LiveView
 - It keeps emerging..
 
 ---
 
-# Event State Reducers
+# It needs a name!
+
+---
+
+# My proposal: Event State Reducers
 - A function which takes
   - Event (w/payload)
   - Current state
@@ -153,13 +176,63 @@ Chris Nelson
 
 ---
 
-# Interesting points
-- State is immutable
-- ???
+# A caution: don't confuse the pattern with the implementation!
+## Redux is *not* the only example
+## There is a simpler way to do it..
 
 ---
 
-# How we can we apply this to web app development?
+```elixir
+defmodule Stack do
+  use GenServer
+
+  @impl true
+  def init(stack) do
+    {:ok, stack}
+  end
+
+  @impl true
+  def handle_call(:pop, _from, [head | tail]) do
+    {:reply, head, tail}
+  end
+
+  @impl true
+  def handle_cast({:push, element}, state) do
+    {:noreply, [element | state]}
+  end
+end
+```
+
+---
+
+# Another good idea: "dumb" components
+- React
+- EmberJS (actions up, data down)
+- LiveView functional components
+
+---
+
+# Keeping components simple
+- render data
+  - often passed in as props
+- dispatch events
+- Step 3: Profit!
+
+---
+
+# Putting things together
+## On the client:
+- dispatch events
+- subcribe to changes from server
+- render state
+## On the server:
+- receive events
+- reducer functions compute new state
+- push state changes to clients
+
+---
+
+# What if applied this pattern to web app development?
 ### What are the pieces and where should they live?
 
 ---
@@ -173,13 +246,25 @@ Chris Nelson
 
 # State
 - We'd *really* like a single source of truth
-- This makes us want to originate it server side
+- For most apps, things need to persist server side
 
 ---
 
 # Reducers
 - They kinda need to run where the state is
 - This means server side
+
+---
+
+# Putting things together
+- 
+---
+
+# Example time
+## Let's make a comment section
+- We want to render existing comments
+- We want to submit new ones
+- We want to see them come in without a refresh
 
 ---
 
@@ -190,14 +275,6 @@ Chris Nelson
   - render state and dispatch events
 - Server code is simple
   - reducer functions
-
----
-
-# Example time
-## Let's make a comment section
-- We want to render existing comments
-- We want to submit new ones
-- We want to see them come in without a refresh
 
 ---
 
