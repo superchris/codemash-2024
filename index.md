@@ -85,6 +85,11 @@ Chris Nelson
 
 ---
 
+
+![](web1.png)
+
+---
+
 # On the third day DHH created Rails
 - Convention over configuration
 - Really productive language
@@ -95,17 +100,21 @@ Chris Nelson
 
 # And it was good..
 ## We were pretty productive at building web apps
+
 ---
 
 # And then AJAX happened
 - The user experience got a lot better
 - The developer experiences, not so much..
-- We now had massive piles of JS to deal with
-- And thus began the cycle..
+- Previous server side MVC was no longer viable
 
 ---
 
-# The cycle
+# Two approaches
+
+---
+
+# Client side MVC
 1. Let's apply same good ideas that worked server side in JS!
 2. Let's build a JS MVC framwork!
 3. Ugghh this one got big and complicated...
@@ -122,12 +131,12 @@ Chris Nelson
 
 # How'd that turn out?
 - Mostly, not that great :(
-- Turns multiple languages isn't problem
-- Which means isomorphism isn't the answer
+- Turns multiple languages isn't the most important problem
+- Client MVC and server MVC means 2 applications to keep in sync
 
 ---
 
-# What's the actual problem 
+# What's the actual problem ?
 - HTTP is stateless, our applications have state
 - With server-side MVC we had a place for our state
 - Now it lives in (at least) two places..
@@ -142,11 +151,15 @@ Chris Nelson
 
 ---
 
-# So far we've mostly talked about bad ideas
+# This is where we've been for about 10 years
 
 ---
 
-# Let's talk about some good ones!
+# *Le sigh*
+
+---
+
+# Let's talk about some good ideas!
 
 ---
 
@@ -163,16 +176,23 @@ Chris Nelson
 
 ---
 
-# It needs a name!
-
----
-
-# My proposal: Event State Reducers
+# The core idea
 - A function which takes
   - Event (w/payload)
   - Current state
 - And returns:
   - A new state
+
+---
+
+# It needs a name!
+- Functional Reactive Programming?
+- Maybe, but kinda not
+
+---
+
+# My proposal: Event State Reducers
+## Spread the word!
 
 ---
 
@@ -220,11 +240,40 @@ end
 
 ---
 
-# Putting things together
+# Todo list element
+```ts
+@customElement('todo-list')
+export class TodoList extends LitElement {
+
+  @property({type: Array})
+  todos: string[] = [];
+
+  @query('input[name="todo"]')
+  todoInput: HTMLInputElement;
+
+  render() {
+    return html`
+      <ul>
+        ${this.todos?.map(todo => html`<li>${todo}</li>`)}
+      </ul>
+      <input name="todo"/>
+      <button @click=${this.addTodo}>Add item</button>
+    `;
+  }
+
+  addTodo(e) {
+    e.preventDefault();
+    this.dispatchEvent(new CustomEvent('add-todo', {detail: this.todoInput.value}));
+  }
+}
+```
+---
+
+# What if we put these ideas together?
 ## On the client:
-- dispatch events
 - subcribe to changes from server
 - render state
+- dispatch events
 ## On the server:
 - receive events
 - reducer functions compute new state
@@ -232,64 +281,272 @@ end
 
 ---
 
-# What if applied this pattern to web app development?
-### What are the pieces and where should they live?
+# Diagram
 
 ---
 
-# Events
-- Our browser is great at producing these
-- Seems like they need to originate client side
-- It would be nice to use plain ole DOM events
+# LiveState
+- An implementation of this pattern
+- Not the first, not the only
+- Client code javascript npm
+- Server side Elixir library
 
----
-
-# State
-- We'd *really* like a single source of truth
-- For most apps, things need to persist server side
-
----
-
-# Reducers
-- They kinda need to run where the state is
-- This means server side
-
----
-
-# Putting things together
-- 
 ---
 
 # Example time
 ## Let's make a comment section
 - We want to render existing comments
 - We want to submit new ones
-- We want to see them come in without a refresh
+
+---
+## Client code:
+```ts
+import { LitElement, html } from "lit";
+import { customElement, property, query, state } from "lit/decorators.js";
+import { liveState, liveStateConfig, liveStateProperty } from 'phx-live-state';
+
+type Comment = {
+  author: string;
+  text: string;
+}
+
+@customElement('comments-section')
+@liveState({
+  url: 'ws://localhost:4000/live_state',
+  topic: 'comments:all',
+  events: {send: ['add-comment']}
+})
+export class CommentsSectionElement extends LitElement {
+
+  @state()
+  @liveStateProperty()
+  comments: Comment[] = [];
+
+  @query('form')
+  form: HTMLFormElement;
+
+  ...
+}
+```
+---
+## More client code:
+```ts
+  render() {
+    return html`
+      <dl>
+        ${this.comments.map((comment) => html`
+          <dt>${comment.author}</dt>
+          <dd>${comment.text}</dd>
+        `)}
+      </dl>
+      <form @submit=${this.addComment}>
+        <div>
+          <label>Author</label>
+          <input name="author" />
+        </div>
+        <div>
+          <label>Comment</label>
+          <input name="text" />
+        </div>
+        <button>Add comment</button>
+      </form>
+    `;
+  }
+
+  addComment(e: SubmitEvent) {
+    e.preventDefault();
+    const comment = Object.fromEntries(new FormData(this.form));
+    this.dispatchEvent(new CustomEvent('add-comment', {detail: comment}));
+    this.form!.reset();
+  }
+
+```
+---
+# Server code:
+```elixir
+defmodule SimpifiedCommentsWeb.CommentsChannel do
+  @moduledoc false
+
+  use LiveState.Channel, web_module: SimpifiedCommentsWeb
+
+  @impl true
+  def init(_channel, _params, _socket) do
+    {:ok, %{comments: []}}
+  end
+
+  @impl true
+  def handle_event("add-comment", comment, %{comments: comments} = state) do
+    {:noreply, Map.put(state, :comments, [comment | comments])}
+  end
+
+end
+```
 
 ---
 
-# LiveState
-- Dispatch events
-- Subscribe to state
-- Client code is simple
-  - render state and dispatch events
-- Server code is simple
-  - reducer functions
+# [Demo](./wobsite.html)
+### Page html
+```html
+<html>
+  <head>
+    <script type="module" src="http://localhost:4000/assets/app.js"></script>
+  </head>
+  <body>
+    <h1>Pretend website</h1>
+
+    Comments below...
+    
+    <comments-section url="ws://localhost:4000/live_state"></comments-section>
+  </body>
+</html>
+```
+---
+
+# How does this even work?
+- `CommentSectionElement` makes WebSocket bidirectional connection during `connectCallback`
+- `add-comment` event listeners are added to push events over the WS connection
+- state updates arrive over WS connection
+- listeners for state change events update the `comments` property
+- `Lit` re-renders on prop changes
 
 ---
 
-# How does this work?
-- Elixir and Erlang
-- OTP: 25 years of distributed computing lessons
+# That sounds like a lot of work!
+- Nope, thanks to Phoenix and Elixir :)
+- Phoenix Channels
+  - An thin abstraction over WebSockets
+- Erlang/OTP: 25 years of distributed computing lessons
 - Extremely light-weight processes to manage state
 - High availabity, concurrent
 
 ---
 
-![link to slides](loop-rocket.gif)
-- slides: https://github.com/launchscout/elixirconf2023-beyond-liveview
-- live_elements: https://github.com/launchscout/live_elements
-- live_state elixir library: https://github.com/launchscout/live_state
-- phx-live-state client npm: https://github.com/launchscout/live-state
+# Some observations
+- Bi-directional
+- Serve it from anywhere (include file://)
+- No longer request/response
+  - Message passing
+  - PubSub
+- Real time is essentially free!
+  - Events can come from other sources
+  - Computing state and notifying clients is the same
+
+---
+
+# Lets make our comments real-time
+- The scope of channel state is connection
+- We need to notify other connected users
+- Phoenix PubSub to the rescue!
+
+---
+
+# Show me teh codez
+```elixir
+defmodule SimpifiedCommentsWeb.CommentsChannel do
+  @moduledoc false
+
+  use LiveState.Channel, web_module: SimpifiedCommentsWeb
+  alias Phoenix.PubSub
+
+  @impl true
+  def init(_channel, _params, _socket) do
+    PubSub.subscribe(SimpifiedComments.PubSub, "comments")
+    {:ok, %{comments: []}}
+  end
+
+  @impl true
+  def handle_event("add-comment", comment, state) do
+    PubSub.broadcast(SimpifiedComments.PubSub, "comments", {:add_comment, comment})
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_message({:add_comment, comment}, %{comments: comments} = state) do
+    {:noreply, Map.put(state, :comments, [comment | comments])}
+  end
+
+end
+
+```
+---
+
+# How about a more interesting example?
+## Let's go shopping!
+- We have static website (plain old html)
+- We want to add *interactive* ecommerce
+
+---
+
+# What do we need?
+- An add item button
+- A cart
+- And they need to share state
+
+---
+
+# Launch cart demo
+
+---
+
+# Other implementations
+- Phoenix LiveView
+ - the original
+ - Elixir on client and server
+ - Lots of JS to make it work, but you don't have to touch it :)
+
+---
+# LiveView client
+```html
+<dl>
+  <%= for comment <- @comments do %>
+    <dt><%= comment["author"] %></dt>
+    <dd><%= comment["text"] %></dd>
+  <% end %>
+</dl>
+<form phx-submit="add_comment">
+  <div>
+    <label>Author</label>
+    <input name="author" />
+  </div>
+  <div>
+    <label>Comment</label>
+    <input name="text" />
+  </div>
+  <button>Add comment</button>
+</form>
+```
+---
+# LiveView server
+```elixir
+defmodule SimpifiedCommentsWeb.CommentsLive do
+  use SimpifiedCommentsWeb, :live_view
+
+  def mount(_parms, _session, socket) do
+    {:ok, socket |> assign(:comments, [])}
+  end
+
+  def handle_event("add_comment", comment, %{assigns: %{comments: comments}} = socket) do
+    {:noreply, socket |> assign(:comments, [comment | comments])}
+  end
+end
+```
+
+---
+
+# Other other implementations
+- LiveViewJS
+- Hotwire (kinda?)
+
+---
+
+# But is this actually viable
+- Heck yes
+  - We've been building LiveView apps for a couple years
+  - LiveState is newer but starting to catch on
+  - Our dev experience is radically improved
+  - We're hitting estimates at a rate we haven't since Rails
+- Not just us
+  - [Cars.com](https://cars.com)
+  - [LiveRoom.app](https://liveroom.app)
 
 ---
