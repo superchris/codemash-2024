@@ -40,7 +40,7 @@ Chris Nelson
 
 <!-- footer: ![](full-color.png) -->
 # Who am I?
-- Long-time (old) Web App Developer
+- 25+ year Web App Developer
 - Co-Founder of Launch Scout
 - Creator of LiveState
 
@@ -75,6 +75,8 @@ Chris Nelson
 - HTTP is stateless, but applications are not
 - Code organization was pretty random :(
 - Perl is a write only language ;)
+- DB stored procs that generated HTML
+  - Need I say more?
 
 ---
 
@@ -85,6 +87,7 @@ Chris Nelson
 
 ---
 
+# Server side MVC
 
 ![](web1.png)
 
@@ -143,6 +146,10 @@ Chris Nelson
 
 ---
 
+# Maybe diagram here?
+
+---
+
 # Congratulations! We are building distributed systems
 ## And building distributed systems is hard...
 - Shared mutable state is hard
@@ -152,10 +159,7 @@ Chris Nelson
 ---
 
 # This is where we've been for about 10 years
-
----
-
-# *Le sigh*
+### *Le sigh*
 
 ---
 
@@ -196,31 +200,11 @@ Chris Nelson
 
 ---
 
-# A caution: don't confuse the pattern with the implementation!
-## Redux is *not* the only example
-## There is a simpler way to do it..
-
----
-
-```elixir
-defmodule Stack do
-  use GenServer
-
-  @impl true
-  def init(stack) do
-    {:ok, stack}
-  end
-
-  @impl true
-  def handle_call(:pop, _from, [head | tail]) do
-    {:reply, head, tail}
-  end
-
-  @impl true
-  def handle_cast({:push, element}, state) do
-    {:noreply, [element | state]}
-  end
-end
+# Example reducer
+```js
+addTodo({item}, todoList) {
+  return todoList.concat(item);
+}
 ```
 
 ---
@@ -248,16 +232,31 @@ export class TodoList extends LitElement {
   @property({type: Array})
   todos: string[] = [];
 
-  @query('input[name="todo"]')
-  todoInput: HTMLInputElement;
-
   render() {
     return html`
       <ul>
         ${this.todos?.map(todo => html`<li>${todo}</li>`)}
       </ul>
+    `;
+  }
+}
+```
+
+---
+# Todo form
+```ts
+@customElement('todo-list')
+export class TodoForm extends LitElement {
+
+  @query('input[name="todo"]')
+  todoInput: HTMLInputElement;
+
+  render() {
+    return html`
+    <form>
       <input name="todo"/>
       <button @click=${this.addTodo}>Add item</button>
+    </form>
     `;
   }
 
@@ -267,6 +266,29 @@ export class TodoList extends LitElement {
   }
 }
 ```
+
+---
+# Using em on a [web page](todo-website.html)
+```html
+<html>
+  <head>
+    <script type="module" src="http://localhost:4000/assets/app.js"></script>
+  </head>
+  <body>
+    <h1>Todo List</h1>
+    <todo-list todos='["Buy Milk", "Speak at Momentum"]'></todo-list>
+    <todo-form></todo-form>
+  </body>
+</html>
+```
+---
+
+# But how do we actually add todos?
+- We could make an API
+  - REST
+  - GraphQL
+- Is there a simpler way?
+
 ---
 
 # What if we put these ideas together?
@@ -282,6 +304,7 @@ export class TodoList extends LitElement {
 ---
 
 # Diagram
+![](event_reducers.png)
 
 ---
 
@@ -293,7 +316,80 @@ export class TodoList extends LitElement {
 
 ---
 
-# Example time
+# Finishing our Todo List
+```ts
+@customElement('todo-list')
+@liveState({
+  url: 'ws://localhost:4000/live_state',
+  topic: 'todo_list',
+  provide: {scope: window, name: 'todos'},
+  properties: ['todos']
+})
+export class TodoList extends LitElement {
+...
+```
+```ts
+@customElement('todo-form')
+@liveState({
+  context: 'todos',
+  events: {send: ['add-todo']}
+})
+export class TodoForm extends LitElement {
+...
+```
+---
+# Server side reducer
+```elixir
+defmodule SimpifiedCommentsWeb.TodoListChannel do
+  @moduledoc false
+
+  use LiveState.Channel, web_module: SimpifiedCommentsWeb
+
+  @impl true
+  def init(_channel, _params, _socket) do
+    {:ok, %{todos: ["Buy Milk", "Speak at Momentum"]}}
+  end
+
+  @impl true
+  def handle_event("add-todo", item, %{todos: todos} = state) do
+    {:noreply, Map.put(state, :todos, [item | todos])}
+  end
+
+end
+
+```
+---
+
+# How does this even work?
+- `CommentSectionElement` makes WebSocket bidirectional connection during `connectCallback`
+- `add-comment` event listeners are added to push events over the WS connection
+- state updates arrive over WS connection
+- listeners for state change events update the `comments` property
+- `Lit` re-renders on prop changes
+
+---
+
+# That sounds like a lot of work!
+- Nope, thanks to Phoenix and Elixir :)
+- Phoenix Channels
+  - An thin abstraction over WebSockets
+- Erlang/OTP: 25 years of distributed computing lessons
+- Extremely light-weight processes to manage state
+- High availabity, concurrent
+
+---
+
+# Some observations
+- Bi-directional
+- Serve it from anywhere (include file://)
+- No longer request/response
+  - Message passing
+  - PubSub
+- Real time is essentially free!
+  - Events can come from other sources
+  - Computing state and notifying clients is the same
+
+---
 ## Let's make a comment section
 - We want to render existing comments
 - We want to submit new ones
@@ -402,37 +498,6 @@ end
 ```
 ---
 
-# How does this even work?
-- `CommentSectionElement` makes WebSocket bidirectional connection during `connectCallback`
-- `add-comment` event listeners are added to push events over the WS connection
-- state updates arrive over WS connection
-- listeners for state change events update the `comments` property
-- `Lit` re-renders on prop changes
-
----
-
-# That sounds like a lot of work!
-- Nope, thanks to Phoenix and Elixir :)
-- Phoenix Channels
-  - An thin abstraction over WebSockets
-- Erlang/OTP: 25 years of distributed computing lessons
-- Extremely light-weight processes to manage state
-- High availabity, concurrent
-
----
-
-# Some observations
-- Bi-directional
-- Serve it from anywhere (include file://)
-- No longer request/response
-  - Message passing
-  - PubSub
-- Real time is essentially free!
-  - Events can come from other sources
-  - Computing state and notifying clients is the same
-
----
-
 # Lets make our comments real-time
 - The scope of channel state is connection
 - We need to notify other connected users
@@ -468,6 +533,8 @@ defmodule SimpifiedCommentsWeb.CommentsChannel do
 end
 
 ```
+---
+# [Let's see it](wobsite.html)
 ---
 
 # How about a more interesting example?
@@ -539,7 +606,7 @@ end
 
 ---
 
-# But is this actually viable
+# But is this actually viable?
 - Heck yes
   - We've been building LiveView apps for a couple years
   - LiveState is newer but starting to catch on
@@ -548,5 +615,6 @@ end
 - Not just us
   - [Cars.com](https://cars.com)
   - [LiveRoom.app](https://liveroom.app)
+  - [PatientReach360](https://patientreach360.com)
 
 ---
