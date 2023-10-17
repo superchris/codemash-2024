@@ -1057,12 +1057,8 @@ section #title-slide-logo {
   margin-left: -60px;
 }
 ;">
-<h1 id="whats-the-actual-problem">What's the actual problem ?</h1>
-<ul>
-<li>HTTP is stateless, our applications have state</li>
-<li>With server-side MVC we had a place for our state</li>
-<li>Now it lives in (at least) two places..</li>
-</ul>
+<h1 id="all-the-mvcs">All the MVCs</h1>
+<p><img src="web2.png" alt="" /></p>
 <footer><img src="full-color.png" alt="" /></footer>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="18" data-footer="![](full-color.png)" data-style="
@@ -1120,7 +1116,12 @@ section #title-slide-logo {
   margin-left: -60px;
 }
 ;">
-<h1 id="maybe-diagram-here">Maybe diagram here?</h1>
+<h1 id="whats-the-actual-problem">What's the actual problem ?</h1>
+<ul>
+<li>HTTP is stateless, our applications have state</li>
+<li>With server-side MVC we had a place for our state</li>
+<li>Now it lives in (at least) two places..</li>
+</ul>
 <footer><img src="full-color.png" alt="" /></footer>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="19" data-footer="![](full-color.png)" data-style="
@@ -1483,14 +1484,15 @@ section #title-slide-logo {
 }
 ;">
 <h1 id="the-core-idea">The core idea</h1>
+<h2 id="a-functional-design-pattern-for-managing-state">A functional design pattern for managing state</h2>
 <ul>
-<li>A function which takes
+<li>Reducer functions which take
 <ul>
 <li>Event (w/payload)</li>
 <li>Current state</li>
 </ul>
 </li>
-<li>And returns:
+<li>And return:
 <ul>
 <li>A new state</li>
 </ul>
@@ -1498,7 +1500,75 @@ section #title-slide-logo {
 </ul>
 <footer><img src="full-color.png" alt="" /></footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="25" data-footer="![](full-color.png)" data-style="
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="25" data-marpit-fragments="4" data-footer="![](full-color.png)" data-style="
+section h1 {
+  color: #6042BC;
+}
+
+section code {
+  background-color: #e0e0ff;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+}
+
+footer img {
+  position: absolute;
+  width: 120px;
+  right: 20px;
+  top: 0;
+
+}
+section #title-slide-logo {
+  margin-left: -60px;
+}
+" style="--footer:![](full-color.png);--style:
+section h1 {
+  color: #6042BC;
+}
+
+section code {
+  background-color: #e0e0ff;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+}
+
+footer img {
+  position: absolute;
+  width: 120px;
+  right: 20px;
+  top: 0;
+
+}
+section #title-slide-logo {
+  margin-left: -60px;
+}
+;">
+<h1 id="todo-list-reducer">Todo list reducer</h1>
+<ul>
+<li data-marpit-fragment="1">Add item event<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-js"><span class="hljs-title function_">todoReducer</span>({<span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Add item&quot;</span>, <span class="hljs-attr">item</span>: <span class="hljs-string">&quot;Get Milk&quot;</span>}, [])
+</code></pre>
+</li>
+<li data-marpit-fragment="2">Returns new state: <code>[&quot;Get Milk]</code></li>
+<li data-marpit-fragment="3">Add a second item<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-js"><span class="hljs-title function_">todoReducer</span>({<span class="hljs-attr">name</span>: <span class="hljs-string">&quot;Add item&quot;</span>, <span class="hljs-attr">item</span>: <span class="hljs-string">&quot;Speak at Momentum&quot;</span>}, [<span class="hljs-string">&quot;Get Milk&quot;</span>])
+</code></pre>
+</li>
+<li data-marpit-fragment="4">Returns new state: <code>[&quot;Get Milk&quot;, &quot;Speak at Momentum&quot;]</code></li>
+</ul>
+<footer><img src="full-color.png" alt="" /></footer>
+</section>
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="26" data-footer="![](full-color.png)" data-style="
 section h1 {
   color: #6042BC;
 }
@@ -1560,7 +1630,7 @@ section #title-slide-logo {
 </ul>
 <footer><img src="full-color.png" alt="" /></footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="26" data-footer="![](full-color.png)" data-style="
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="27" data-footer="![](full-color.png)" data-style="
 section h1 {
   color: #6042BC;
 }
@@ -1617,68 +1687,6 @@ section #title-slide-logo {
 ;">
 <h1 id="my-proposal-event-state-reducers">My proposal: Event State Reducers</h1>
 <h2 id="spread-the-word">Spread the word!</h2>
-<footer><img src="full-color.png" alt="" /></footer>
-</section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="27" data-footer="![](full-color.png)" data-style="
-section h1 {
-  color: #6042BC;
-}
-
-section code {
-  background-color: #e0e0ff;
-}
-
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-}
-
-footer img {
-  position: absolute;
-  width: 120px;
-  right: 20px;
-  top: 0;
-
-}
-section #title-slide-logo {
-  margin-left: -60px;
-}
-" style="--footer:![](full-color.png);--style:
-section h1 {
-  color: #6042BC;
-}
-
-section code {
-  background-color: #e0e0ff;
-}
-
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-}
-
-footer img {
-  position: absolute;
-  width: 120px;
-  right: 20px;
-  top: 0;
-
-}
-section #title-slide-logo {
-  margin-left: -60px;
-}
-;">
-<h1 id="example-reducer">Example reducer</h1>
-<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-js"><span class="hljs-title function_">addTodo</span>(<span class="hljs-params">{item}, todoList</span>) {
-  <span class="hljs-keyword">return</span> todoList.<span class="hljs-title function_">concat</span>(item);
-}
-</code></pre>
 <footer><img src="full-color.png" alt="" /></footer>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="28" data-footer="![](full-color.png)" data-style="
@@ -1866,7 +1874,7 @@ section #title-slide-logo {
   margin-left: -60px;
 }
 ;">
-<h1 id="todo-list-element">Todo list element</h1>
+<h1 id="todo-list-element"><code>&lt;todo-list&gt;</code> element</h1>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-ts"><span class="hljs-meta">@customElement</span>(<span class="hljs-string">&#x27;todo-list&#x27;</span>)
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TodoList</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">LitElement</span> {
 
@@ -1939,8 +1947,8 @@ section #title-slide-logo {
   margin-left: -60px;
 }
 ;">
-<h1 id="todo-form">Todo form</h1>
-<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-ts"><span class="hljs-meta">@customElement</span>(<span class="hljs-string">&#x27;todo-list&#x27;</span>)
+<h1 id="todo-form">&lt;todo-form&gt;</h1>
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-ts"><span class="hljs-meta">@customElement</span>(<span class="hljs-string">&#x27;todo-form&#x27;</span>)
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TodoForm</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">LitElement</span> {
 
   <span class="hljs-meta">@query</span>(<span class="hljs-string">&#x27;input[name=&quot;todo&quot;]&#x27;</span>)
@@ -2501,10 +2509,10 @@ section #title-slide-logo {
 ;">
 <h1 id="how-does-this-even-work">How does this even work?</h1>
 <ul>
-<li><code>CommentSectionElement</code> makes WebSocket bidirectional connection during <code>connectCallback</code></li>
-<li><code>add-comment</code> event listeners are added to push events over the WS connection</li>
+<li><code>&lt;todo-list&gt;</code> and <code>&lt;todo-form&gt;</code> make WebSocket bidirectional connection during <code>connectCallback</code></li>
+<li><code>add-todo</code> event listeners are added to push events over the WS connection</li>
 <li>state updates arrive over WS connection</li>
-<li>listeners for state change events update the <code>comments</code> property</li>
+<li>listeners for state change events update the <code>todos</code> property in <code>&lt;todo-list&gt;</code></li>
 <li><code>Lit</code> re-renders on prop changes</li>
 </ul>
 <footer><img src="full-color.png" alt="" /></footer>
@@ -2639,7 +2647,7 @@ section #title-slide-logo {
 <li>Serve it from anywhere (include file://)</li>
 <li>No longer request/response
 <ul>
-<li>Message passing</li>
+<li>Event oriented</li>
 <li>PubSub</li>
 </ul>
 </li>
@@ -2707,11 +2715,7 @@ section #title-slide-logo {
   margin-left: -60px;
 }
 ;">
-<h2 id="lets-make-a-comment-section">Let's make a comment section</h2>
-<ul>
-<li>We want to render existing comments</li>
-<li>We want to submit new ones</li>
-</ul>
+<h1 id="lets-chat">Let's chat!</h1>
 <footer><img src="full-color.png" alt="" /></footer>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="43" data-footer="![](full-color.png)" data-style="
@@ -2774,28 +2778,28 @@ section #title-slide-logo {
 <span class="hljs-keyword">import</span> { customElement, property, query, state } <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;lit/decorators.js&quot;</span>;
 <span class="hljs-keyword">import</span> { liveState, liveStateConfig, liveStateProperty } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;phx-live-state&#x27;</span>;
 
-<span class="hljs-keyword">type</span> <span class="hljs-title class_">Comment</span> = {
+<span class="hljs-keyword">type</span> <span class="hljs-title class_">Message</span> = {
   <span class="hljs-attr">author</span>: <span class="hljs-built_in">string</span>;
   <span class="hljs-attr">text</span>: <span class="hljs-built_in">string</span>;
 }
 
-<span class="hljs-meta">@customElement</span>(<span class="hljs-string">&#x27;comments-section&#x27;</span>)
+<span class="hljs-meta">@customElement</span>(<span class="hljs-string">&#x27;lets-chat&#x27;</span>)
 <span class="hljs-meta">@liveState</span>({
-  <span class="hljs-attr">url</span>: <span class="hljs-string">&#x27;ws://localhost:4000/live_state&#x27;</span>,
-  <span class="hljs-attr">topic</span>: <span class="hljs-string">&#x27;comments:all&#x27;</span>,
-  <span class="hljs-attr">events</span>: {<span class="hljs-attr">send</span>: [<span class="hljs-string">&#x27;add-comment&#x27;</span>]}
+  <span class="hljs-attr">topic</span>: <span class="hljs-string">&#x27;chat:all&#x27;</span>,
+  <span class="hljs-attr">events</span>: {<span class="hljs-attr">send</span>: [<span class="hljs-string">&#x27;add-message&#x27;</span>]}
 })
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">CommentsSectionElement</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">LitElement</span> {
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">LetsChatElement</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_ inherited__">LitElement</span> {
+
+  <span class="hljs-meta">@liveStateConfig</span>(<span class="hljs-string">&#x27;url&#x27;</span>)
+  <span class="hljs-meta">@property</span>()
+  <span class="hljs-attr">url</span>: <span class="hljs-built_in">string</span> = <span class="hljs-string">&#x27;&#x27;</span>;
 
   <span class="hljs-meta">@state</span>()
   <span class="hljs-meta">@liveStateProperty</span>()
-  <span class="hljs-attr">comments</span>: <span class="hljs-title class_">Comment</span>[] = [];
+  <span class="hljs-attr">messages</span>: <span class="hljs-title class_">Message</span>[] = [];
 
   <span class="hljs-meta">@query</span>(<span class="hljs-string">&#x27;form&#x27;</span>)
   <span class="hljs-attr">form</span>: <span class="hljs-title class_">HTMLFormElement</span>;
-
-  ...
-}
 </code></pre>
 <footer><img src="full-color.png" alt="" /></footer>
 </section>
@@ -2854,36 +2858,36 @@ section #title-slide-logo {
   margin-left: -60px;
 }
 ;">
-<h2 id="more-client-code">More client code:</h2>
+<h1 id="contd">Cont'd</h1>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-ts">  <span class="hljs-title function_">render</span>(<span class="hljs-params"></span>) {
     <span class="hljs-keyword">return</span> html`<span class="language-xml">
       <span class="hljs-tag">&lt;<span class="hljs-name">dl</span>&gt;</span>
-        </span><span class="hljs-subst">${<span class="hljs-variable language_">this</span>.comments.map((comment) =&gt; html`<span class="language-xml">
-          <span class="hljs-tag">&lt;<span class="hljs-name">dt</span>&gt;</span></span><span class="hljs-subst">${comment.author}</span><span class="language-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">dt</span>&gt;</span>
-          <span class="hljs-tag">&lt;<span class="hljs-name">dd</span>&gt;</span></span><span class="hljs-subst">${comment.text}</span><span class="language-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">dd</span>&gt;</span>
+        </span><span class="hljs-subst">${<span class="hljs-variable language_">this</span>.messages.map((message) =&gt; html`<span class="language-xml">
+          <span class="hljs-tag">&lt;<span class="hljs-name">dt</span>&gt;</span></span><span class="hljs-subst">${message.author}</span><span class="language-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">dt</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">dd</span>&gt;</span></span><span class="hljs-subst">${message.text}</span><span class="language-xml"><span class="hljs-tag">&lt;/<span class="hljs-name">dd</span>&gt;</span>
         `</span>)}</span><span class="language-xml">
       <span class="hljs-tag">&lt;/<span class="hljs-name">dl</span>&gt;</span>
-      <span class="hljs-tag">&lt;<span class="hljs-name">form</span> @<span class="hljs-attr">submit</span>=</span></span><span class="hljs-subst">${<span class="hljs-variable language_">this</span>.addComment}</span><span class="language-xml"><span class="hljs-tag">&gt;</span>
+      <span class="hljs-tag">&lt;<span class="hljs-name">form</span> @<span class="hljs-attr">submit</span>=</span></span><span class="hljs-subst">${<span class="hljs-variable language_">this</span>.addMessage}</span><span class="language-xml"><span class="hljs-tag">&gt;</span>
         <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
           <span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>Author<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
           <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;author&quot;</span> /&gt;</span>
         <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
         <span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span>
-          <span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>Comment<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+          <span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>Message<span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
           <span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;text&quot;</span> /&gt;</span>
         <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">button</span>&gt;</span>Add comment<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">button</span>&gt;</span>Add message<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span>
       <span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span>
     `</span>;
   }
 
-  <span class="hljs-title function_">addComment</span>(<span class="hljs-params">e: SubmitEvent</span>) {
+  <span class="hljs-title function_">addMessage</span>(<span class="hljs-params">e: SubmitEvent</span>) {
     e.<span class="hljs-title function_">preventDefault</span>();
-    <span class="hljs-keyword">const</span> comment = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">fromEntries</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FormData</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">form</span>));
-    <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">dispatchEvent</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">CustomEvent</span>(<span class="hljs-string">&#x27;add-comment&#x27;</span>, {<span class="hljs-attr">detail</span>: comment}));
+    <span class="hljs-keyword">const</span> message = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">fromEntries</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">FormData</span>(<span class="hljs-variable language_">this</span>.<span class="hljs-property">form</span>));
+    <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">dispatchEvent</span>(<span class="hljs-keyword">new</span> <span class="hljs-title class_">CustomEvent</span>(<span class="hljs-string">&#x27;add-message&#x27;</span>, {<span class="hljs-attr">detail</span>: message}));
     <span class="hljs-variable language_">this</span>.<span class="hljs-property">form</span>!.<span class="hljs-title function_">reset</span>();
   }
-
+}
 </code></pre>
 <footer><img src="full-color.png" alt="" /></footer>
 </section>
@@ -2943,22 +2947,31 @@ section #title-slide-logo {
 }
 ;">
 <h1 id="server-code">Server code:</h1>
-<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-elixir"><span class="hljs-class"><span class="hljs-keyword">defmodule</span> <span class="hljs-title">SimpifiedCommentsWeb.CommentsChannel</span></span> <span class="hljs-keyword">do</span>
+<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-elixir"><span class="hljs-class"><span class="hljs-keyword">defmodule</span> <span class="hljs-title">SimpifiedCommentsWeb.ChatChannel</span></span> <span class="hljs-keyword">do</span>
   <span class="hljs-variable">@moduledoc</span> <span class="hljs-literal">false</span>
 
   <span class="hljs-keyword">use</span> <span class="hljs-title class_">LiveState</span>.<span class="hljs-title class_">Channel</span>, <span class="hljs-symbol">web_module:</span> <span class="hljs-title class_">SimpifiedCommentsWeb</span>
+  <span class="hljs-keyword">alias</span> <span class="hljs-title class_">Phoenix</span>.<span class="hljs-title class_">PubSub</span>
 
   <span class="hljs-variable">@impl</span> <span class="hljs-literal">true</span>
   <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">init</span></span>(_channel, _params, _socket) <span class="hljs-keyword">do</span>
-    {<span class="hljs-symbol">:ok</span>, %{<span class="hljs-symbol">comments:</span> []}}
+    <span class="hljs-title class_">PubSub</span>.subscribe(<span class="hljs-title class_">SimpifiedComments</span>.<span class="hljs-title class_">PubSub</span>, <span class="hljs-string">&quot;messages&quot;</span>)
+    {<span class="hljs-symbol">:ok</span>, %{<span class="hljs-symbol">messages:</span> []}}
   <span class="hljs-keyword">end</span>
 
   <span class="hljs-variable">@impl</span> <span class="hljs-literal">true</span>
-  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">handle_event</span></span>(<span class="hljs-string">&quot;add-comment&quot;</span>, comment, %{<span class="hljs-symbol">comments:</span> comments} = state) <span class="hljs-keyword">do</span>
-    {<span class="hljs-symbol">:noreply</span>, <span class="hljs-title class_">Map</span>.put(state, <span class="hljs-symbol">:comments</span>, [comment | comments])}
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">handle_event</span></span>(<span class="hljs-string">&quot;add-message&quot;</span>, message, state) <span class="hljs-keyword">do</span>
+    <span class="hljs-title class_">PubSub</span>.broadcast(<span class="hljs-title class_">SimpifiedComments</span>.<span class="hljs-title class_">PubSub</span>, <span class="hljs-string">&quot;messages&quot;</span>, {<span class="hljs-symbol">:add_message</span>, message})
+    {<span class="hljs-symbol">:noreply</span>, state}
+  <span class="hljs-keyword">end</span>
+
+  <span class="hljs-variable">@impl</span> <span class="hljs-literal">true</span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">handle_message</span></span>({<span class="hljs-symbol">:add_message</span>, message}, %{<span class="hljs-symbol">messages:</span> messages} = state) <span class="hljs-keyword">do</span>
+    {<span class="hljs-symbol">:noreply</span>, <span class="hljs-title class_">Map</span>.put(state, <span class="hljs-symbol">:messages</span>, [message | messages])}
   <span class="hljs-keyword">end</span>
 
 <span class="hljs-keyword">end</span>
+
 </code></pre>
 <footer><img src="full-color.png" alt="" /></footer>
 </section>
@@ -3017,7 +3030,7 @@ section #title-slide-logo {
   margin-left: -60px;
 }
 ;">
-<h1 id="demo"><a href="./wobsite.html">Demo</a></h1>
+<h1 id="demo"><a href="./chat.html">Demo</a></h1>
 <h3 id="page-html">Page html</h3>
 <pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-html"><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span>
   <span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>
@@ -3026,404 +3039,15 @@ section #title-slide-logo {
   <span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span>
     <span class="hljs-tag">&lt;<span class="hljs-name">h1</span>&gt;</span>Pretend website<span class="hljs-tag">&lt;/<span class="hljs-name">h1</span>&gt;</span>
 
-    Comments below...
+    Let&#x27;s chat...
     
-    <span class="hljs-tag">&lt;<span class="hljs-name">comments-section</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;ws://localhost:4000/live_state&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">comments-section</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">lets-chat</span> <span class="hljs-attr">url</span>=<span class="hljs-string">&quot;ws://localhost:4000/live_state&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">lets-chat</span>&gt;</span>
   <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span>
 </code></pre>
 <footer><img src="full-color.png" alt="" /></footer>
 </section>
 </foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="47" data-footer="![](full-color.png)" data-style="
-section h1 {
-  color: #6042BC;
-}
-
-section code {
-  background-color: #e0e0ff;
-}
-
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-}
-
-footer img {
-  position: absolute;
-  width: 120px;
-  right: 20px;
-  top: 0;
-
-}
-section #title-slide-logo {
-  margin-left: -60px;
-}
-" style="--footer:![](full-color.png);--style:
-section h1 {
-  color: #6042BC;
-}
-
-section code {
-  background-color: #e0e0ff;
-}
-
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-}
-
-footer img {
-  position: absolute;
-  width: 120px;
-  right: 20px;
-  top: 0;
-
-}
-section #title-slide-logo {
-  margin-left: -60px;
-}
-;">
-<h1 id="lets-make-our-comments-real-time">Lets make our comments real-time</h1>
-<ul>
-<li>The scope of channel state is connection</li>
-<li>We need to notify other connected users</li>
-<li>Phoenix PubSub to the rescue!</li>
-</ul>
-<footer><img src="full-color.png" alt="" /></footer>
-</section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="48" data-footer="![](full-color.png)" data-style="
-section h1 {
-  color: #6042BC;
-}
-
-section code {
-  background-color: #e0e0ff;
-}
-
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-}
-
-footer img {
-  position: absolute;
-  width: 120px;
-  right: 20px;
-  top: 0;
-
-}
-section #title-slide-logo {
-  margin-left: -60px;
-}
-" style="--footer:![](full-color.png);--style:
-section h1 {
-  color: #6042BC;
-}
-
-section code {
-  background-color: #e0e0ff;
-}
-
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-}
-
-footer img {
-  position: absolute;
-  width: 120px;
-  right: 20px;
-  top: 0;
-
-}
-section #title-slide-logo {
-  margin-left: -60px;
-}
-;">
-<h1 id="show-me-teh-codez">Show me teh codez</h1>
-<pre is="marp-pre" data-auto-scaling="downscale-only"><code class="language-elixir"><span class="hljs-class"><span class="hljs-keyword">defmodule</span> <span class="hljs-title">SimpifiedCommentsWeb.CommentsChannel</span></span> <span class="hljs-keyword">do</span>
-  <span class="hljs-variable">@moduledoc</span> <span class="hljs-literal">false</span>
-
-  <span class="hljs-keyword">use</span> <span class="hljs-title class_">LiveState</span>.<span class="hljs-title class_">Channel</span>, <span class="hljs-symbol">web_module:</span> <span class="hljs-title class_">SimpifiedCommentsWeb</span>
-  <span class="hljs-keyword">alias</span> <span class="hljs-title class_">Phoenix</span>.<span class="hljs-title class_">PubSub</span>
-
-  <span class="hljs-variable">@impl</span> <span class="hljs-literal">true</span>
-  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">init</span></span>(_channel, _params, _socket) <span class="hljs-keyword">do</span>
-    <span class="hljs-title class_">PubSub</span>.subscribe(<span class="hljs-title class_">SimpifiedComments</span>.<span class="hljs-title class_">PubSub</span>, <span class="hljs-string">&quot;comments&quot;</span>)
-    {<span class="hljs-symbol">:ok</span>, %{<span class="hljs-symbol">comments:</span> []}}
-  <span class="hljs-keyword">end</span>
-
-  <span class="hljs-variable">@impl</span> <span class="hljs-literal">true</span>
-  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">handle_event</span></span>(<span class="hljs-string">&quot;add-comment&quot;</span>, comment, state) <span class="hljs-keyword">do</span>
-    <span class="hljs-title class_">PubSub</span>.broadcast(<span class="hljs-title class_">SimpifiedComments</span>.<span class="hljs-title class_">PubSub</span>, <span class="hljs-string">&quot;comments&quot;</span>, {<span class="hljs-symbol">:add_comment</span>, comment})
-    {<span class="hljs-symbol">:noreply</span>, state}
-  <span class="hljs-keyword">end</span>
-
-  <span class="hljs-variable">@impl</span> <span class="hljs-literal">true</span>
-  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">handle_message</span></span>({<span class="hljs-symbol">:add_comment</span>, comment}, %{<span class="hljs-symbol">comments:</span> comments} = state) <span class="hljs-keyword">do</span>
-    {<span class="hljs-symbol">:noreply</span>, <span class="hljs-title class_">Map</span>.put(state, <span class="hljs-symbol">:comments</span>, [comment | comments])}
-  <span class="hljs-keyword">end</span>
-
-<span class="hljs-keyword">end</span>
-
-</code></pre>
-<footer><img src="full-color.png" alt="" /></footer>
-</section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="49" data-footer="![](full-color.png)" data-style="
-section h1 {
-  color: #6042BC;
-}
-
-section code {
-  background-color: #e0e0ff;
-}
-
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-}
-
-footer img {
-  position: absolute;
-  width: 120px;
-  right: 20px;
-  top: 0;
-
-}
-section #title-slide-logo {
-  margin-left: -60px;
-}
-" style="--footer:![](full-color.png);--style:
-section h1 {
-  color: #6042BC;
-}
-
-section code {
-  background-color: #e0e0ff;
-}
-
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-}
-
-footer img {
-  position: absolute;
-  width: 120px;
-  right: 20px;
-  top: 0;
-
-}
-section #title-slide-logo {
-  margin-left: -60px;
-}
-;">
-<h1 id="lets-see-it"><a href="wobsite.html">Let's see it</a></h1>
-<footer><img src="full-color.png" alt="" /></footer>
-</section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="50" data-footer="![](full-color.png)" data-style="
-section h1 {
-  color: #6042BC;
-}
-
-section code {
-  background-color: #e0e0ff;
-}
-
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-}
-
-footer img {
-  position: absolute;
-  width: 120px;
-  right: 20px;
-  top: 0;
-
-}
-section #title-slide-logo {
-  margin-left: -60px;
-}
-" style="--footer:![](full-color.png);--style:
-section h1 {
-  color: #6042BC;
-}
-
-section code {
-  background-color: #e0e0ff;
-}
-
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-}
-
-footer img {
-  position: absolute;
-  width: 120px;
-  right: 20px;
-  top: 0;
-
-}
-section #title-slide-logo {
-  margin-left: -60px;
-}
-;">
-<h1 id="how-about-a-more-interesting-example">How about a more interesting example?</h1>
-<h2 id="lets-go-shopping">Let's go shopping!</h2>
-<ul>
-<li>We have static website (plain old html)</li>
-<li>We want to add <em>interactive</em> ecommerce</li>
-</ul>
-<footer><img src="full-color.png" alt="" /></footer>
-</section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="51" data-footer="![](full-color.png)" data-style="
-section h1 {
-  color: #6042BC;
-}
-
-section code {
-  background-color: #e0e0ff;
-}
-
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-}
-
-footer img {
-  position: absolute;
-  width: 120px;
-  right: 20px;
-  top: 0;
-
-}
-section #title-slide-logo {
-  margin-left: -60px;
-}
-" style="--footer:![](full-color.png);--style:
-section h1 {
-  color: #6042BC;
-}
-
-section code {
-  background-color: #e0e0ff;
-}
-
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-}
-
-footer img {
-  position: absolute;
-  width: 120px;
-  right: 20px;
-  top: 0;
-
-}
-section #title-slide-logo {
-  margin-left: -60px;
-}
-;">
-<h1 id="what-do-we-need">What do we need?</h1>
-<ul>
-<li>An add item button</li>
-<li>A cart</li>
-<li>And they need to share state</li>
-</ul>
-<footer><img src="full-color.png" alt="" /></footer>
-</section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="52" data-footer="![](full-color.png)" data-style="
-section h1 {
-  color: #6042BC;
-}
-
-section code {
-  background-color: #e0e0ff;
-}
-
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-}
-
-footer img {
-  position: absolute;
-  width: 120px;
-  right: 20px;
-  top: 0;
-
-}
-section #title-slide-logo {
-  margin-left: -60px;
-}
-" style="--footer:![](full-color.png);--style:
-section h1 {
-  color: #6042BC;
-}
-
-section code {
-  background-color: #e0e0ff;
-}
-
-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 100px;
-}
-
-footer img {
-  position: absolute;
-  width: 120px;
-  right: 20px;
-  top: 0;
-
-}
-section #title-slide-logo {
-  margin-left: -60px;
-}
-;">
-<h1 id="launch-cart-demo">Launch cart demo</h1>
-<footer><img src="full-color.png" alt="" /></footer>
-</section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="53" data-footer="![](full-color.png)" data-style="
 section h1 {
   color: #6042BC;
 }
@@ -3487,7 +3111,7 @@ section #title-slide-logo {
 </ul>
 <footer><img src="full-color.png" alt="" /></footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="54" data-footer="![](full-color.png)" data-style="
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="48" data-footer="![](full-color.png)" data-style="
 section h1 {
   color: #6042BC;
 }
@@ -3563,7 +3187,7 @@ section #title-slide-logo {
 </code></pre>
 <footer><img src="full-color.png" alt="" /></footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="55" data-footer="![](full-color.png)" data-style="
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="49" data-footer="![](full-color.png)" data-style="
 section h1 {
   color: #6042BC;
 }
@@ -3633,7 +3257,7 @@ section #title-slide-logo {
 </code></pre>
 <footer><img src="full-color.png" alt="" /></footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="56" data-footer="![](full-color.png)" data-style="
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="50" data-footer="![](full-color.png)" data-style="
 section h1 {
   color: #6042BC;
 }
@@ -3695,7 +3319,7 @@ section #title-slide-logo {
 </ul>
 <footer><img src="full-color.png" alt="" /></footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="57" data-footer="![](full-color.png)" data-style="
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="51" data-footer="![](full-color.png)" data-style="
 section h1 {
   color: #6042BC;
 }
@@ -3752,25 +3376,207 @@ section #title-slide-logo {
 ;">
 <h1 id="but-is-this-actually-viable">But is this actually viable?</h1>
 <ul>
-<li>Heck yes
-<ul>
+<li>Heck yes</li>
 <li>We've been building LiveView apps for a couple years</li>
 <li>LiveState is newer but starting to catch on</li>
 <li>Our dev experience is radically improved</li>
 <li>We're hitting estimates at a rate we haven't since Rails</li>
 </ul>
-</li>
-<li>Not just us
+<footer><img src="full-color.png" alt="" /></footer>
+</section>
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="52" data-footer="![](full-color.png)" data-style="
+section h1 {
+  color: #6042BC;
+}
+
+section code {
+  background-color: #e0e0ff;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+}
+
+footer img {
+  position: absolute;
+  width: 120px;
+  right: 20px;
+  top: 0;
+
+}
+section #title-slide-logo {
+  margin-left: -60px;
+}
+" style="--footer:![](full-color.png);--style:
+section h1 {
+  color: #6042BC;
+}
+
+section code {
+  background-color: #e0e0ff;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+}
+
+footer img {
+  position: absolute;
+  width: 120px;
+  right: 20px;
+  top: 0;
+
+}
+section #title-slide-logo {
+  margin-left: -60px;
+}
+;">
+<h1 id="production-examples">Production examples</h1>
 <ul>
-<li><a href="https://cars.com">Cars.com</a></li>
+<li><a href="https://launch-cart-dev.fly.dev/">Launch Elements</a>
+<ul>
+<li><a href="tiny-store.html">Demo</a></li>
+</ul>
+</li>
 <li><a href="https://liveroom.app">LiveRoom.app</a></li>
 <li><a href="https://patientreach360.com">PatientReach360</a></li>
+</ul>
+<footer><img src="full-color.png" alt="" /></footer>
+</section>
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="53" data-footer="![](full-color.png)" data-style="
+section h1 {
+  color: #6042BC;
+}
+
+section code {
+  background-color: #e0e0ff;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+}
+
+footer img {
+  position: absolute;
+  width: 120px;
+  right: 20px;
+  top: 0;
+
+}
+section #title-slide-logo {
+  margin-left: -60px;
+}
+" style="--footer:![](full-color.png);--style:
+section h1 {
+  color: #6042BC;
+}
+
+section code {
+  background-color: #e0e0ff;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+}
+
+footer img {
+  position: absolute;
+  width: 120px;
+  right: 20px;
+  top: 0;
+
+}
+section #title-slide-logo {
+  margin-left: -60px;
+}
+;">
+<h1 id="future-things">Future things</h1>
+<ul>
+<li>WebAssembly!
+<ul>
+<li>Until fairly recently, not super pratical</li>
+<li>Things like Extism and WebAssembly Components eliminate significant hurdles</li>
+<li>Writing event handlers in the language of your choice is now practical</li>
 </ul>
 </li>
 </ul>
 <footer><img src="full-color.png" alt="" /></footer>
 </section>
-</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="58" data-footer="![](full-color.png)" data-style="
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="54" data-footer="![](full-color.png)" data-style="
+section h1 {
+  color: #6042BC;
+}
+
+section code {
+  background-color: #e0e0ff;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+}
+
+footer img {
+  position: absolute;
+  width: 120px;
+  right: 20px;
+  top: 0;
+
+}
+section #title-slide-logo {
+  margin-left: -60px;
+}
+" style="--footer:![](full-color.png);--style:
+section h1 {
+  color: #6042BC;
+}
+
+section code {
+  background-color: #e0e0ff;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100px;
+}
+
+footer img {
+  position: absolute;
+  width: 120px;
+  right: 20px;
+  top: 0;
+
+}
+section #title-slide-logo {
+  margin-left: -60px;
+}
+;">
+<h1 id="thanks">Thanks!!</h1>
+<footer><img src="full-color.png" alt="" /></footer>
+</section>
+</foreignObject></svg><svg data-marpit-svg="" viewBox="0 0 1280 720"><foreignObject width="1280" height="720"><section id="55" data-footer="![](full-color.png)" data-style="
 section h1 {
   color: #6042BC;
 }

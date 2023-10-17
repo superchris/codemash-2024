@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="/css/index.css">
 
   <link rel="icon" href="/images/favicon.png" type="image/png" />
-
+  <script type="module" src="https://cdn.jsdelivr.net/npm/launch-elements"></script>
   <link rel="stylesheet" href="https://use.typekit.net/jjm1gir.css">
 </head>
 
@@ -24,6 +24,7 @@
     <a href="/" class="" title="Homepage" aria-current=page>
       <img src="/images/launch-scout-logo.png" width="80" />
     </a>
+    <launch-cart url="wss://launch-cart-dev.fly.dev/socket" store-id="8407181c-b073-4a91-83ab-2909bf845e00"></launch-cart>
   </header>
 
 
@@ -42,7 +43,10 @@
         </a>
         <div class="product-preview__details" title="Product Details">
           <p class="product-preview__price" title="Product Price">$20.00</p>
-        </div>        
+        </div>
+        <launch-cart-additem price-id="price_1NOj9vJCD8xu5j0CcOfFOxvv">
+          <button>Add to cart!</button>
+        </launch-cart-additem>                
       </li>
 
       <li class="product-preview" title="Light Shirt">
@@ -57,6 +61,9 @@
         <div class="product-preview__details" title="Product Details">
           <p class="product-preview__price" title="Product Price">$10.00</p>
         </div>
+        <launch-cart-additem price-id="price_1Mmf9ZJCD8xu5j0Cvhiej65g">
+          <button>Add to cart!</button>
+        </launch-cart-additem>
       </li>
 
     </ol>

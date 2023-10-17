@@ -139,14 +139,16 @@ Chris Nelson
 
 ---
 
+# All the MVCs
+
+![](web2.png)
+
+---
+
 # What's the actual problem ?
 - HTTP is stateless, our applications have state
 - With server-side MVC we had a place for our state
 - Now it lives in (at least) two places..
-
----
-
-# Maybe diagram here?
 
 ---
 
@@ -181,12 +183,26 @@ Chris Nelson
 ---
 
 # The core idea
-- A function which takes
+## A functional design pattern for managing state
+- Reducer functions which take
   - Event (w/payload)
   - Current state
-- And returns:
+- And return:
   - A new state
 
+---
+
+# Todo list reducer
+* Add item event
+  ```js
+  todoReducer({name: "Add item", item: "Get Milk"}, [])
+  ```
+* Returns new state: ```["Get Milk]```
+* Add a second item
+  ```js
+  todoReducer({name: "Add item", item: "Speak at Momentum"}, ["Get Milk"])
+  ```
+* Returns new state: ```["Get Milk", "Speak at Momentum"]```
 ---
 
 # It needs a name!
@@ -197,15 +213,6 @@ Chris Nelson
 
 # My proposal: Event State Reducers
 ## Spread the word!
-
----
-
-# Example reducer
-```js
-addTodo({item}, todoList) {
-  return todoList.concat(item);
-}
-```
 
 ---
 
@@ -224,7 +231,7 @@ addTodo({item}, todoList) {
 
 ---
 
-# Todo list element
+# `<todo-list>` element
 ```ts
 @customElement('todo-list')
 export class TodoList extends LitElement {
@@ -243,9 +250,9 @@ export class TodoList extends LitElement {
 ```
 
 ---
-# Todo form
+# <todo-form>
 ```ts
-@customElement('todo-list')
+@customElement('todo-form')
 export class TodoForm extends LitElement {
 
   @query('input[name="todo"]')
@@ -361,10 +368,10 @@ end
 ---
 
 # How does this even work?
-- `CommentSectionElement` makes WebSocket bidirectional connection during `connectCallback`
-- `add-comment` event listeners are added to push events over the WS connection
+- `<todo-list>` and `<todo-form>` make WebSocket bidirectional connection during `connectCallback`
+- `add-todo` event listeners are added to push events over the WS connection
 - state updates arrive over WS connection
-- listeners for state change events update the `comments` property
+- listeners for state change events update the `todos` property in `<todo-list>`
 - `Lit` re-renders on prop changes
 
 ---
@@ -383,16 +390,15 @@ end
 - Bi-directional
 - Serve it from anywhere (include file://)
 - No longer request/response
-  - Message passing
+  - Event oriented
   - PubSub
 - Real time is essentially free!
   - Events can come from other sources
   - Computing state and notifying clients is the same
 
 ---
-## Let's make a comment section
-- We want to render existing comments
-- We want to submit new ones
+
+# Let's chat!
 
 ---
 ## Client code:
@@ -401,86 +407,98 @@ import { LitElement, html } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
 import { liveState, liveStateConfig, liveStateProperty } from 'phx-live-state';
 
-type Comment = {
+type Message = {
   author: string;
   text: string;
 }
 
-@customElement('comments-section')
+@customElement('lets-chat')
 @liveState({
-  url: 'ws://localhost:4000/live_state',
-  topic: 'comments:all',
-  events: {send: ['add-comment']}
+  topic: 'chat:all',
+  events: {send: ['add-message']}
 })
-export class CommentsSectionElement extends LitElement {
+export class LetsChatElement extends LitElement {
+
+  @liveStateConfig('url')
+  @property()
+  url: string = '';
 
   @state()
   @liveStateProperty()
-  comments: Comment[] = [];
+  messages: Message[] = [];
 
   @query('form')
   form: HTMLFormElement;
-
-  ...
-}
 ```
+
 ---
-## More client code:
+# Cont'd
 ```ts
   render() {
     return html`
       <dl>
-        ${this.comments.map((comment) => html`
-          <dt>${comment.author}</dt>
-          <dd>${comment.text}</dd>
+        ${this.messages.map((message) => html`
+          <dt>${message.author}</dt>
+          <dd>${message.text}</dd>
         `)}
       </dl>
-      <form @submit=${this.addComment}>
+      <form @submit=${this.addMessage}>
         <div>
           <label>Author</label>
           <input name="author" />
         </div>
         <div>
-          <label>Comment</label>
+          <label>Message</label>
           <input name="text" />
         </div>
-        <button>Add comment</button>
+        <button>Add message</button>
       </form>
     `;
   }
 
-  addComment(e: SubmitEvent) {
+  addMessage(e: SubmitEvent) {
     e.preventDefault();
-    const comment = Object.fromEntries(new FormData(this.form));
-    this.dispatchEvent(new CustomEvent('add-comment', {detail: comment}));
+    const message = Object.fromEntries(new FormData(this.form));
+    this.dispatchEvent(new CustomEvent('add-message', {detail: message}));
     this.form!.reset();
   }
-
+}
 ```
+
 ---
+
 # Server code:
 ```elixir
-defmodule SimpifiedCommentsWeb.CommentsChannel do
+defmodule SimpifiedCommentsWeb.ChatChannel do
   @moduledoc false
 
   use LiveState.Channel, web_module: SimpifiedCommentsWeb
+  alias Phoenix.PubSub
 
   @impl true
   def init(_channel, _params, _socket) do
-    {:ok, %{comments: []}}
+    PubSub.subscribe(SimpifiedComments.PubSub, "messages")
+    {:ok, %{messages: []}}
   end
 
   @impl true
-  def handle_event("add-comment", comment, %{comments: comments} = state) do
-    {:noreply, Map.put(state, :comments, [comment | comments])}
+  def handle_event("add-message", message, state) do
+    PubSub.broadcast(SimpifiedComments.PubSub, "messages", {:add_message, message})
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_message({:add_message, message}, %{messages: messages} = state) do
+    {:noreply, Map.put(state, :messages, [message | messages])}
   end
 
 end
+
 ```
 
 ---
 
-# [Demo](./wobsite.html)
+# [Demo](./chat.html)
 ### Page html
 ```html
 <html>
@@ -490,68 +508,12 @@ end
   <body>
     <h1>Pretend website</h1>
 
-    Comments below...
+    Let's chat...
     
-    <comments-section url="ws://localhost:4000/live_state"></comments-section>
+    <lets-chat url="ws://localhost:4000/live_state"></lets-chat>
   </body>
 </html>
 ```
----
-
-# Lets make our comments real-time
-- The scope of channel state is connection
-- We need to notify other connected users
-- Phoenix PubSub to the rescue!
-
----
-
-# Show me teh codez
-```elixir
-defmodule SimpifiedCommentsWeb.CommentsChannel do
-  @moduledoc false
-
-  use LiveState.Channel, web_module: SimpifiedCommentsWeb
-  alias Phoenix.PubSub
-
-  @impl true
-  def init(_channel, _params, _socket) do
-    PubSub.subscribe(SimpifiedComments.PubSub, "comments")
-    {:ok, %{comments: []}}
-  end
-
-  @impl true
-  def handle_event("add-comment", comment, state) do
-    PubSub.broadcast(SimpifiedComments.PubSub, "comments", {:add_comment, comment})
-    {:noreply, state}
-  end
-
-  @impl true
-  def handle_message({:add_comment, comment}, %{comments: comments} = state) do
-    {:noreply, Map.put(state, :comments, [comment | comments])}
-  end
-
-end
-
-```
----
-# [Let's see it](wobsite.html)
----
-
-# How about a more interesting example?
-## Let's go shopping!
-- We have static website (plain old html)
-- We want to add *interactive* ecommerce
-
----
-
-# What do we need?
-- An add item button
-- A cart
-- And they need to share state
-
----
-
-# Launch cart demo
 
 ---
 
@@ -608,13 +570,29 @@ end
 
 # But is this actually viable?
 - Heck yes
-  - We've been building LiveView apps for a couple years
-  - LiveState is newer but starting to catch on
-  - Our dev experience is radically improved
-  - We're hitting estimates at a rate we haven't since Rails
-- Not just us
-  - [Cars.com](https://cars.com)
-  - [LiveRoom.app](https://liveroom.app)
-  - [PatientReach360](https://patientreach360.com)
+- We've been building LiveView apps for a couple years
+- LiveState is newer but starting to catch on
+- Our dev experience is radically improved
+- We're hitting estimates at a rate we haven't since Rails
+
+---
+
+# Production examples
+- [Launch Elements](https://launch-cart-dev.fly.dev/)
+  - [Demo](tiny-store.html)
+- [LiveRoom.app](https://liveroom.app)
+- [PatientReach360](https://patientreach360.com)
+
+---
+
+# Future things
+- WebAssembly!
+  - Until fairly recently, not super pratical
+  - Things like Extism and WebAssembly Components eliminate significant hurdles
+  - Writing event handlers in the language of your choice is now practical
+
+---
+
+# Thanks!!
 
 ---
