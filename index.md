@@ -34,6 +34,7 @@ style: |
 ### Why and how we should change the way we build web applications
 Chris Nelson
 @superchris
+chris@launchscout.com
 ![h:200](full-color.png#title-slide-logo)
 
 ---
@@ -149,6 +150,7 @@ Chris Nelson
 - HTTP is stateless, our applications have state
 - With server-side MVC we had a place for our state
 - Now it lives in (at least) two places..
+  - And it's our job to keep it in sync(ish)
 
 ---
 
@@ -197,12 +199,19 @@ Chris Nelson
   ```js
   todoReducer({name: "Add item", item: "Get Milk"}, [])
   ```
-* Returns new state: ```["Get Milk]```
+* Returns new state: ```["Get Milk"]```
 * Add a second item
   ```js
   todoReducer({name: "Add item", item: "Speak at Momentum"}, ["Get Milk"])
   ```
 * Returns new state: ```["Get Milk", "Speak at Momentum"]```
+---
+
+# Things we like
+- Easy to understand
+- State is immutable
+- Well suited to functional languages
+
 ---
 
 # It needs a name!
@@ -275,20 +284,6 @@ export class TodoForm extends LitElement {
 ```
 
 ---
-# Using em on a [web page](todo-website.html)
-```html
-<html>
-  <head>
-    <script type="module" src="http://localhost:4000/assets/app.js"></script>
-  </head>
-  <body>
-    <h1>Todo List</h1>
-    <todo-list todos='["Buy Milk", "Speak at Momentum"]'></todo-list>
-    <todo-form></todo-form>
-  </body>
-</html>
-```
----
 
 # But how do we actually add todos?
 - We could make an API
@@ -300,9 +295,9 @@ export class TodoForm extends LitElement {
 
 # What if we put these ideas together?
 ## On the client:
-- subcribe to changes from server
 - render state
 - dispatch events
+- subcribe to changes from server
 ## On the server:
 - receive events
 - reducer functions compute new state
@@ -367,6 +362,21 @@ end
 ```
 ---
 
+# Putting it all [together](todo-website.html)
+```html
+<html>
+  <head>
+    <script type="module" src="http://localhost:4000/assets/app.js"></script>
+  </head>
+  <body>
+    <h1>Todo List</h1>
+    <todo-list></todo-list>
+    <todo-form></todo-form>
+  </body>
+</html>
+```
+---
+
 # How does this even work?
 - `<todo-list>` and `<todo-form>` make WebSocket bidirectional connection during `connectCallback`
 - `add-todo` event listeners are added to push events over the WS connection
@@ -382,13 +392,14 @@ end
   - An thin abstraction over WebSockets
 - Erlang/OTP: 25 years of distributed computing lessons
 - Extremely light-weight processes to manage state
+  - Each connection has their own process and state
 - High availabity, concurrent
 
 ---
 
-# Some observations
+# Things we like
 - Bi-directional
-- Serve it from anywhere (include file://)
+- Serve HTML from anywhere (include file://)
 - No longer request/response
   - Event oriented
   - PubSub
@@ -401,7 +412,7 @@ end
 # Let's chat!
 
 ---
-## Client code:
+# <lets-chat>
 ```ts
 import { LitElement, html } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
@@ -432,7 +443,7 @@ export class LetsChatElement extends LitElement {
 ```
 
 ---
-# Cont'd
+# <lets-chat> cont'd
 ```ts
   render() {
     return html`
@@ -545,6 +556,7 @@ end
 </form>
 ```
 ---
+
 # LiveView server
 ```elixir
 defmodule SimpifiedCommentsWeb.CommentsLive do
@@ -565,6 +577,7 @@ end
 # Other other implementations
 - LiveViewJS
 - Hotwire (kinda?)
+- use-live-state React hook
 
 ---
 
@@ -587,7 +600,7 @@ end
 
 # Future things
 - WebAssembly!
-  - Until fairly recently, not super pratical
+  - Until fairly recently, not super practical
   - Things like Extism and WebAssembly Components eliminate significant hurdles
   - Writing event handlers in the language of your choice is now practical
 
