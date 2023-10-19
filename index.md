@@ -240,52 +240,43 @@ chris@launchscout.com
 
 ---
 
-# `<todo-list>` element
-```ts
-@customElement('todo-list')
-export class TodoList extends LitElement {
+# Let's make a comment section
 
-  @property({type: Array})
-  todos: string[] = [];
+---
+
+## `<comments-section>` element
+```ts
+@customElement('comments-section')
+export class CommentsSectionElement extends LitElement {
+
+  @state()
+  comments: string[] = [];
 
   render() {
     return html`
       <ul>
-        ${this.todos?.map(todo => html`<li>${todo}</li>`)}
+        ${this.comments.map((comment) => html`<li>${comment}`)}
       </ul>
-    `;
-  }
-}
-```
-
----
-# <todo-form>
-```ts
-@customElement('todo-form')
-export class TodoForm extends LitElement {
-
-  @query('input[name="todo"]')
-  todoInput: HTMLInputElement;
-
-  render() {
-    return html`
-    <form>
-      <input name="todo"/>
-      <button @click=${this.addTodo}>Add item</button>
-    </form>
+      <form @submit=${this.addComment}>
+        <div>
+          <label>Comment</label>
+          <input name="comment" />
+        </div>
+        <button>Add comment</button>
+      </form>
     `;
   }
 
-  addTodo(e) {
+  addComment(e: SubmitEvent) {
     e.preventDefault();
-    this.dispatchEvent(new CustomEvent('add-todo', {detail: this.todoInput.value}));
+    this.dispatchEvent(new CustomEvent('add-comment', {detail: {comment: this.commentInput.value}}));
+    this.commentInput!.value = '';
   }
 }
 ```
-
 ---
 
-# But how do we actually add todos?
+# But how do we actually add comments?
 - We could make an API
   - REST
   - GraphQL
@@ -318,70 +309,65 @@ export class TodoForm extends LitElement {
 
 ---
 
-# Finishing our Todo List
+# Finishing our Comment Section
 ```ts
-@customElement('todo-list')
+@customElement('comments-section')
 @liveState({
+  topic: 'comments:all',
   url: 'ws://localhost:4000/live_state',
-  topic: 'todo_list',
-  provide: {scope: window, name: 'todos'},
-  properties: ['todos']
+  events: {send: ['add-comment']}
 })
-export class TodoList extends LitElement {
-...
-```
-```ts
-@customElement('todo-form')
-@liveState({
-  context: 'todos',
-  events: {send: ['add-todo']}
-})
-export class TodoForm extends LitElement {
+export class CommentsSectionElement extends LitElement {
+
+  @state()
+  @liveStateProperty()
+  comments: string[] = [];
 ...
 ```
 ---
 # Server side reducer
 ```elixir
-defmodule SimpifiedCommentsWeb.TodoListChannel do
+defmodule SimpifiedCommentsWeb.CommentsChannel do
   @moduledoc false
 
   use LiveState.Channel, web_module: SimpifiedCommentsWeb
 
   @impl true
   def init(_channel, _params, _socket) do
-    {:ok, %{todos: ["Buy Milk", "Speak at Momentum"]}}
+    {:ok, %{comments: []}}
   end
 
   @impl true
-  def handle_event("add-todo", item, %{todos: todos} = state) do
-    {:noreply, Map.put(state, :todos, [item | todos])}
+  def handle_event("add-comment", %{"comment" => comment}, %{comments: comments} = state) do
+    {:noreply, Map.put(state, :comments, [comment | comments])}
   end
 
 end
-
 ```
 ---
 
-# Putting it all [together](todo-website.html)
+# Putting it all [together](wobsite.html)
 ```html
 <html>
   <head>
     <script type="module" src="http://localhost:4000/assets/app.js"></script>
   </head>
   <body>
-    <h1>Todo List</h1>
-    <todo-list></todo-list>
-    <todo-form></todo-form>
+    <h1>Pretend website</h1>
+
+    Comments below...
+    
+    <comments-section></comments-section>
   </body>
 </html>
 ```
 ---
 
 # How does this even work?
-- `<todo-list>` and `<todo-form>` make WebSocket bidirectional connection during `connectCallback`
-- `add-todo` event listeners are added to push events over the WS connection
+- `<comments-section>` makes WebSocket bidirectional connection during `connectCallback`
+- `add-comment` event listeners are added to push events over the WS connection
 - state updates arrive over WS connection
-- listeners for state change events update the `todos` property in `<todo-list>`
+- listeners for state change events update the `comments` property in `<comments-section>`
 - `Lit` re-renders on prop changes
 
 ---
@@ -400,6 +386,13 @@ end
 # Things we like
 - Bi-directional
 - Serve HTML from anywhere (include file://)
+- State lives on the server
+  - Not shared
+  - Immutable
+
+---
+
+# Other things we like
 - No longer request/response
   - Event oriented
   - PubSub
@@ -409,78 +402,12 @@ end
 
 ---
 
-# Let's chat!
+# Real-time comments!
 
 ---
-# <lets-chat>
-```ts
-import { LitElement, html } from "lit";
-import { customElement, property, query, state } from "lit/decorators.js";
-import { liveState, liveStateConfig, liveStateProperty } from 'phx-live-state';
-
-type Message = {
-  author: string;
-  text: string;
-}
-
-@customElement('lets-chat')
-@liveState({
-  topic: 'chat:all',
-  events: {send: ['add-message']}
-})
-export class LetsChatElement extends LitElement {
-
-  @liveStateConfig('url')
-  @property()
-  url: string = '';
-
-  @state()
-  @liveStateProperty()
-  messages: Message[] = [];
-
-  @query('form')
-  form: HTMLFormElement;
-```
-
----
-# <lets-chat> cont'd
-```ts
-  render() {
-    return html`
-      <dl>
-        ${this.messages.map((message) => html`
-          <dt>${message.author}</dt>
-          <dd>${message.text}</dd>
-        `)}
-      </dl>
-      <form @submit=${this.addMessage}>
-        <div>
-          <label>Author</label>
-          <input name="author" />
-        </div>
-        <div>
-          <label>Message</label>
-          <input name="text" />
-        </div>
-        <button>Add message</button>
-      </form>
-    `;
-  }
-
-  addMessage(e: SubmitEvent) {
-    e.preventDefault();
-    const message = Object.fromEntries(new FormData(this.form));
-    this.dispatchEvent(new CustomEvent('add-message', {detail: message}));
-    this.form!.reset();
-  }
-}
-```
-
----
-
-# Server code:
+## Just sprinkle in some [PubSub...](wobsite.html)
 ```elixir
-defmodule SimpifiedCommentsWeb.ChatChannel do
+defmodule SimpifiedCommentsWeb.CommentsChannel do
   @moduledoc false
 
   use LiveState.Channel, web_module: SimpifiedCommentsWeb
@@ -488,44 +415,24 @@ defmodule SimpifiedCommentsWeb.ChatChannel do
 
   @impl true
   def init(_channel, _params, _socket) do
-    PubSub.subscribe(SimpifiedComments.PubSub, "messages")
-    {:ok, %{messages: []}}
+    PubSub.subscribe(SimpifiedComments.PubSub, "comments")
+    {:ok, %{comments: []}}
   end
 
   @impl true
-  def handle_event("add-message", message, state) do
-    PubSub.broadcast(SimpifiedComments.PubSub, "messages", {:add_message, message})
+  def handle_event("add-comment", %{"comment" => comment}, state) do
+    PubSub.broadcast(SimpifiedComments.PubSub, "comments", {:add_comment, comment})
     {:noreply, state}
   end
 
   @impl true
-  def handle_message({:add_message, message}, %{messages: messages} = state) do
-    {:noreply, Map.put(state, :messages, [message | messages])}
+  def handle_message({:add_comment, comment}, %{comments: comments} = state) do
+    {:noreply, Map.put(state, :comments, [comment | comments])}
   end
 
 end
 
 ```
-
----
-
-# [Demo](./chat.html)
-### Page html
-```html
-<html>
-  <head>
-    <script type="module" src="http://localhost:4000/assets/app.js"></script>
-  </head>
-  <body>
-    <h1>Pretend website</h1>
-
-    Let's chat...
-    
-    <lets-chat url="ws://localhost:4000/live_state"></lets-chat>
-  </body>
-</html>
-```
-
 ---
 
 # Other implementations
@@ -594,16 +501,31 @@ end
 - [Launch Elements](https://launch-cart-dev.fly.dev/)
   - [Demo](tiny-store.html)
 - [LiveRoom.app](https://liveroom.app)
-- [PatientReach360](https://patientreach360.com)
+- [Cars.com](https://cars.com)
 
 ---
 
-# Future things
+# Future things:
 - WebAssembly!
-  - Until fairly recently, not super practical
-  - Things like Extism and WebAssembly Components eliminate significant hurdles
-  - Writing event handlers in the language of your choice is now practical
+- Until fairly recently, not super practical
+- Things like Extism and WebAssembly Components eliminate significant hurdles
+- Writing event handlers in the language of your choice is now practical
 
+---
+
+## Livestate [todo list](http://localhost:4004) reducer in Javascript (compiled to wasm)
+```js
+import { wrap } from "./wrap";
+
+export const init = wrap(function() {
+  return { todos: ["Hello", "WASM"]};
+});
+
+export const addTodo = wrap(function({ todo }, { todos }) {
+  return { todos: [`${todo} from WASM!`, ...todos]};
+});
+
+```
 ---
 
 # Thanks!!
