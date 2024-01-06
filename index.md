@@ -54,9 +54,18 @@ chris@launchscout.com
 
 # Where are we?
 - Is your experience of web app development better than it was 5 years ago?
-- Are you building better apps faster?
+  - Is it easier for people to get started?
+  - Are you building better apps faster?
 - Why is there a new JS framework every week?
-- Would this happen if we had something that most people were happy with?
+  - Would this happen if we had something that most people were happy with?
+
+---
+
+# Here's what I want to prove:
+- It doesn't have to be this way
+- We can have (and deserve!) a simpler, more productive experience
+- Everything we need is already out there
+- Most of it is based on web standards rather than framework du jour
 
 ---
 
@@ -146,7 +155,7 @@ chris@launchscout.com
 
 ---
 
-# What's the actual problem ?
+# What makes things so complicated?
 - HTTP is stateless, our applications have state
 - With server-side MVC we had a place for our state
 - Now it lives in (at least) two places..
@@ -162,11 +171,19 @@ chris@launchscout.com
 
 ---
 
+# And all that client side code...
+- Client side build tools
+- Dependency management
+- Compilation and transpilation
+
+---
+
 # This is where we've been for about 10 years
 ### *Le sigh*
 
 ---
 
+## Oof, that was depressing...
 # Let's talk about some good ideas!
 
 ---
@@ -225,14 +242,14 @@ chris@launchscout.com
 
 ---
 
-# Another good idea: "dumb" components
+# Another good idea: "dumb" clients
 - React
 - EmberJS (actions up, data down)
 - LiveView functional components
 
 ---
 
-# Keeping components simple
+# Keeping client code simple
 - render data
   - often passed in as props
 - dispatch events
@@ -372,14 +389,13 @@ end
 
 ---
 
-# That sounds like a lot of work!
-- Nope, thanks to Phoenix and Elixir :)
-- Phoenix Channels
-  - An thin abstraction over WebSockets
-- Erlang/OTP: 25 years of distributed computing lessons
+# Why Elixir?
+- Erlang/OTP: 25 years of distributed computing learning baked in
 - Extremely light-weight processes to manage state
   - Each connection has their own process and state
 - High availabity, concurrent
+- Phoenix Channels
+  - An thin abstraction over WebSockets
 
 ---
 
@@ -435,11 +451,57 @@ end
 ```
 ---
 
+# So that's cool but I want more control!
+- I want to control the HTML that renders my comments
+- What if I could creat the template to render the comments? 
+- What if I didn't have to make a custom element to do it?
+
+---
+
+# What do we need?
+- We've had the `template` element
+- We haven't had a way to add dynamic bits
+- W3C specs that aim to solve this
+  - Template instantiation
+  - DOM Parts
+
+---
+
+# No the specs are not final but...
+- Multiple polyfill implementations exist
+- They are largely interoperable
+
+---
+
+# Introducing `<live-template>`
+- Connects a template to a Livestate
+- Renders state
+- Dispatches events
+- Repeat...
+
+---
+
+# Comments with a <live-template>
+
+---
+
+# An interesting aside..
+- We don't need a build tool
+- import maps are :fire:
+- let your browser resolve and fetch dependencies
+- jspm makes it ridonkulously easy
+
+---
+
+# Let's see!
+
+---
+
 # Other implementations
 - Phoenix LiveView
  - the original
  - Elixir on client and server
- - Lots of JS to make it work, but you don't have to touch it :)
+ - Lots of JS to make it work, but you (usually) don't have to touch it :)
 
 ---
 # LiveView client
