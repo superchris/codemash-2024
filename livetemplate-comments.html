@@ -29,12 +29,12 @@
     </script>
   </head>
   <body>
-    <live-template url="ws://localhost:4000/live_state" topic="comments:all">
+    <live-template url="ws://localhost:4000/live_state" topic="wasm_comments:all">
       <template>
         <ul>
           <li :each="{{comment in comments}}">{{comment}}</li>
         </ul>
-        <form onsubmit='{{send("add-comment")}}'>
+        <form onsubmit='{{send("addComment")}}'>
           <label>Comment</label>
           <input name="comment" />
           <button>Add!</button>
