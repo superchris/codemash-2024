@@ -34,6 +34,11 @@
         <ul>
           <li :each="{{comment in comments}}">{{comment}}</li>
         </ul>
+        <form onsubmit='{{send("add-comment")}}'>
+          <label>Comment</label>
+          <input name="comment" />
+          <button>Add!</button>
+        </form>
       </template>
     </live-template>
   </body>

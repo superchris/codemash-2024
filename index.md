@@ -481,10 +481,6 @@ end
 
 ---
 
-# Comments with a <live-template>
-
----
-
 # An interesting aside..
 - We don't need a build tool
 - import maps are :fire:
@@ -493,11 +489,11 @@ end
 
 ---
 
-# Let's see!
+# Let's write some code
 
 ---
 
-# Other implementations
+# Other implementations of some of these ideas
 - Phoenix LiveView
  - the original
  - Elixir on client and server
@@ -567,11 +563,12 @@ end
 
 ---
 
-# Future things:
+# Bonus round!:
 - WebAssembly!
 - Until fairly recently, not super practical
-- Things like Extism and WebAssembly Components eliminate significant hurdles
-- Writing event handlers in the language of your choice is now practical
+  - Calling WebAssembly modules with anything other than numbers was a nightmare
+- Things like Extism and WebAssembly Components eliminate this hurdle
+- Writing event handlers in the language of your choice is now possible!
 
 ---
 
@@ -590,6 +587,14 @@ export const addTodo = wrap(function({ todo }, { todos }) {
 ```
 ---
 
-# Thanks!!
+# In conclusion
+- We can make web development simpler
+- We can leverage web standards to help
+- Our libraries should be small and getting smaller
+- New web standards may not get the PR of giant frameworks but they are worth paying attention to!
+
+---
+
+# Thanks!
 
 ---
