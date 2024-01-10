@@ -47,53 +47,52 @@ chris@launchscout.com
 
 ---
 
-# We need to change the way we build web applications
-### This is a big claim, right?
+# Subjectivity warning
+## Based on experience tho
 
 ---
 
-# Where are we?
-- Is your experience of web app development better than it was 5 years ago?
-  - Is it easier for people to get started?
-  - Are you building better apps faster?
-- Why is there a new JS framework every week?
-  - Would this happen if we had something that most people were happy with?
+# Web development compared to 5-10 years ago
+- More complex
+- Slower
+- Less enjoyable
+- Not noticeably better
 
 ---
 
-# Here's what I want to prove:
-- It doesn't have to be this way
-- We can have (and deserve!) a simpler, more productive experience
-- Everything we need is already out there
-- Most of it is based on web standards rather than framework du jour
+# This talk is about..
+- What happened
+- Why
+- How we can make things better
 
 ---
 
 # First let's talk about how we got here
+## A brief history of web development
 
 ---
 
-# In the beginning there was CGI
-- Scripts that printed out HTML
+# The dawn of time: 1993-1997
+- NCSA Mosaic
+- Lynx
+- Netscape
+- No dynamic anything
+
+---
+
+# CGI: the web app equivalent of stone tablets
 - Perl, VB, PL/SQL, you name it!
 - This was ok for little tiny things
 - For large applications, not so much
+- Code organization mostly spaghetti nightmare
 
 ---
 
-# Reasons
-- HTTP is stateless, but applications are not
-- Code organization was pretty random :(
-- Perl is a write only language ;)
-- DB stored procs that generated HTML
-  - Need I say more?
-
----
-
-# On the second day there was MVC
-- Finally we could organize our code
-- A place for everything
-- Java, .NET
+# The browser wars: 1997-2005ish
+- Netscape adds Java/Javascript
+- Microsoft gets scared
+- IE gets bundled into Windoze
+- IE wins (95%+ by 2004)
 
 ---
 
@@ -103,7 +102,8 @@ chris@launchscout.com
 
 ---
 
-# On the third day DHH created Rails
+# Rails
+## IMO opinion the pinnacle of server side MVC
 - Convention over configuration
 - Really productive language
 - State lives in the DB
@@ -111,47 +111,53 @@ chris@launchscout.com
 
 ---
 
-# And it was good..
-## We were pretty productive at building web apps
+# The AJAX era: 2005-2015
+- XMLHttpRequest
+- DHTML
+- GMail sets the bar 2004
+- IE stops innovating after it wins
+  - standards, schmandards
 
 ---
 
-# And then AJAX happened
+# Meanwhile in developer land...
 - The user experience got a lot better
 - The developer experiences, not so much..
-- Previous server side MVC was no longer viable
+- We need to deal with client side code
+- Browsers ain't gonna innovate, so DIY
 
 ---
 
-# Two approaches
+# Getting the client under control
 
 ---
 
 # Client side MVC
 1. Let's apply same good ideas that worked server side in JS!
-2. Let's build a JS MVC framwork!
+2. Let's build a JS MVC framework!
 3. Ugghh this one got big and complicated...
 4. Go to 1.
-
----
-
-# I know, we'll just use one language!
-- Rails RJS (remote javascript)
-- Server side JS framworks
-- Compile *insert language here* into JS
-
----
-
-# How'd that turn out?
-- Mostly, not that great :(
-- Turns multiple languages isn't the most important problem
-- Client MVC and server MVC means 2 applications to keep in sync
 
 ---
 
 # All the MVCs
 
 ![](web2.png)
+
+---
+
+# Maybe the problem is multiple languages
+## Let's just use one!
+- Rails RJS (remote javascript)
+- Server side JS frameworks
+- Compile *insert language here* into JS
+
+---
+
+- Mostly, not that great :(
+- Turns multiple languages isn't the most important problem
+- Client and server code have different concerns
+- Client MVC and server MVC means 2 applications to keep in sync
 
 ---
 
@@ -178,12 +184,42 @@ chris@launchscout.com
 
 ---
 
-# This is where we've been for about 10 years
-### *Le sigh*
+# The modern era: 2015 - present
+- Competitive browsers makes standards matter again
+- Browser makers are more cooperative than ever before
+- Browser innovation has absolutely exloded
+  - to the point where developers are not keeping up
+
+--
+
+# A few highlights
+- Web components (custom HTML elements)
+- Websockets
+- Javascript maturation
+- Webassembly
 
 ---
 
-## Oof, that was depressing...
+# An embarrassment of riches
+- It's impossible to keep up
+- Browsers are innovating faster then developers
+- New ideas based are not yet mainstream
+- Displacement is uncomfortable
+
+---
+
+# We are mostly still coding like its 2015
+- Frameworks that reinvent rather than leverage standards
+- Transpiling to obsolete JS versions
+- Complex builds
+- Oscillations between SPA vs server rendered
+
+---
+
+# But it's doesn't have to be this way...
+
+---
+
 # Let's talk about some good ideas!
 
 ---
@@ -201,7 +237,7 @@ chris@launchscout.com
 
 ---
 
-# The core idea
+# Event/State Reducers
 ## A functional design pattern for managing state
 - Reducer functions which take
   - Event (w/payload)
@@ -222,23 +258,13 @@ chris@launchscout.com
   todoReducer({name: "Add item", item: "Speak at Momentum"}, ["Get Milk"])
   ```
 * Returns new state: ```["Get Milk", "Speak at Momentum"]```
+
 ---
 
 # Things we like
-- Easy to understand
-- State is immutable
-- Well suited to functional languages
-
----
-
-# It needs a name!
-- Functional Reactive Programming?
-- Maybe, but kinda not
-
----
-
-# My proposal: Event State Reducers
-## Spread the word!
+- Simple and predictable
+- Easy to test
+- Well suited to async
 
 ---
 
@@ -249,15 +275,15 @@ chris@launchscout.com
 
 ---
 
-# Keeping client code simple
+# Clients are dumb if...
 - render data
   - often passed in as props
 - dispatch events
-- Step 3: Profit!
+- That's it!
 
 ---
 
-# Let's make a comment section
+# An example: let's make a comment section
 
 ---
 
@@ -272,7 +298,7 @@ export class CommentsSectionElement extends LitElement {
   render() {
     return html`
       <ul>
-        ${this.comments.map((comment) => html`<li>${comment}`)}
+        ${this.comments.map((comment) => html`<li>${comment}</li>`)}
       </ul>
       <form @submit=${this.addComment}>
         <div>
@@ -301,20 +327,25 @@ export class CommentsSectionElement extends LitElement {
 
 ---
 
-# What if we put these ideas together?
-## On the client:
-- render state
-- dispatch events
-- subcribe to changes from server
-## On the server:
-- receive events
-- reducer functions compute new state
-- push state changes to clients
+# Websockets
+- Allows bidirectional communication from client to server
+- What could that give us?
 
 ---
 
-# Diagram
+# Putting the good ideas together...
+
+---
 ![](event_reducers.png)
+
+## Client
+- render state
+- sends events
+- receive state changes
+## Server
+- receive events
+- reducer functions compute new state
+- send state changes
 
 ---
 
@@ -345,16 +376,12 @@ export class CommentsSectionElement extends LitElement {
 # Server side reducer
 ```elixir
 defmodule SimpifiedCommentsWeb.CommentsChannel do
-  @moduledoc false
-
   use LiveState.Channel, web_module: SimpifiedCommentsWeb
 
-  @impl true
   def init(_channel, _params, _socket) do
     {:ok, %{comments: []}}
   end
 
-  @impl true
   def handle_event("add-comment", %{"comment" => comment}, %{comments: comments} = state) do
     {:noreply, Map.put(state, :comments, [comment | comments])}
   end
@@ -378,6 +405,7 @@ end
   </body>
 </html>
 ```
+
 ---
 
 # How does this even work?
@@ -399,21 +427,21 @@ end
 
 ---
 
-# Things we like
-- Bi-directional
-- Serve HTML from anywhere (include file://)
+# Why is this better?
+- Higher level of abstraction
+- From request/response
+- To events and state
 - State lives on the server
   - Not shared
   - Immutable
 
 ---
 
-# Other things we like
-- No longer request/response
-  - Event oriented
-  - PubSub
+# More goodies
+- Bi-directional
+- Serve HTML from anywhere
 - Real time is essentially free!
-  - Events can come from other sources
+  - Events can come from other sources that user interacation
   - Computing state and notifying clients is the same
 
 ---
@@ -453,7 +481,7 @@ end
 
 # So that's cool but I want more control!
 - I want to control the HTML that renders my comments
-- What if I could creat the template to render the comments? 
+- What if I could put the template to render the comments right in my HTML?
 - What if I didn't have to make a custom element to do it?
 
 ---
@@ -461,7 +489,7 @@ end
 # What do we need?
 - We've had the `template` element
 - We haven't had a way to add dynamic bits
-- W3C specs that aim to solve this
+- W3C specs that aim to solve this:
   - Template instantiation
   - DOM Parts
 
@@ -482,7 +510,7 @@ end
 ---
 
 # An interesting aside..
-- We don't need a build tool
+- We don't need a build tool to use `live-template`
 - import maps are :fire:
 - let your browser resolve and fetch dependencies
 - jspm makes it ridonkulously easy
@@ -493,56 +521,11 @@ end
 
 ---
 
-# Other implementations of some of these ideas
-- Phoenix LiveView
- - the original
- - Elixir on client and server
- - Lots of JS to make it work, but you (usually) don't have to touch it :)
-
----
-# LiveView client
-```html
-<dl>
-  <%= for comment <- @comments do %>
-    <dt><%= comment["author"] %></dt>
-    <dd><%= comment["text"] %></dd>
-  <% end %>
-</dl>
-<form phx-submit="add_comment">
-  <div>
-    <label>Author</label>
-    <input name="author" />
-  </div>
-  <div>
-    <label>Comment</label>
-    <input name="text" />
-  </div>
-  <button>Add comment</button>
-</form>
-```
----
-
-# LiveView server
-```elixir
-defmodule SimpifiedCommentsWeb.CommentsLive do
-  use SimpifiedCommentsWeb, :live_view
-
-  def mount(_parms, _session, socket) do
-    {:ok, socket |> assign(:comments, [])}
-  end
-
-  def handle_event("add_comment", comment, %{assigns: %{comments: comments}} = socket) do
-    {:noreply, socket |> assign(:comments, [comment | comments])}
-  end
-end
-```
-
----
-
 # Other other implementations
+- LiveView (Elixir)
 - LiveViewJS
 - Hotwire (kinda?)
-- use-live-state React hook
+- LiveSvelte
 
 ---
 
@@ -560,6 +543,15 @@ end
   - [Demo](tiny-store.html)
 - [LiveRoom.app](https://liveroom.app)
 - [Cars.com](https://cars.com)
+
+---
+
+# Questions to ask yourself
+- Do I need a frameork?
+  - Could my browser do this instead?
+- Does my state need to be in two places?
+- Could I keep things simpler?
+- Is there a test for this?
 
 ---
 
@@ -585,13 +577,6 @@ export const addTodo = wrap(function({ todo }, { todos }) {
 });
 
 ```
----
-
-# In conclusion
-- We can make web development simpler
-- We can leverage web standards to help
-- Our libraries should be small and getting smaller
-- New web standards may not get the PR of giant frameworks but they are worth paying attention to!
 
 ---
 
