@@ -47,12 +47,8 @@ chris@launchscout.com
 
 ---
 
-# Subjectivity warning
-## Based on experience tho
-
----
-
-# Web development compared to 5-10 years ago
+# Here is my claim:
+## Mainstream web app development compared to 5-10 years ago
 - More complex
 - Slower
 - Less enjoyable
@@ -99,16 +95,10 @@ chris@launchscout.com
 # Server side MVC
 
 ![](web1.png)
-
----
-
-# Rails
-## IMO opinion the pinnacle of server side MVC
-- Convention over configuration
-- Really productive language
-- State lives in the DB
+- Code organization
+- State lives on server (probably in a DB)
 - We could build apps really fast
-
+- JS largely ignored
 ---
 
 # The AJAX era: 2005-2015
@@ -128,11 +118,7 @@ chris@launchscout.com
 
 ---
 
-# Getting the client under control
-
----
-
-# Client side MVC
+# Yay! Client side MVC to the rescue...
 1. Let's apply same good ideas that worked server side in JS!
 2. Let's build a JS MVC framework!
 3. Ugghh this one got big and complicated...
@@ -146,34 +132,14 @@ chris@launchscout.com
 
 ---
 
-# Maybe the problem is multiple languages
-## Let's just use one!
-- Rails RJS (remote javascript)
-- Server side JS frameworks
-- Compile *insert language here* into JS
-
----
-
-- Mostly, not that great :(
-- Turns multiple languages isn't the most important problem
-- Client and server code have different concerns
-- Client MVC and server MVC means 2 applications to keep in sync
-
----
-
-# What makes things so complicated?
+# Congratulations! We are building distributed systems
+## And building distributed systems is hard...
 - HTTP is stateless, our applications have state
 - With server-side MVC we had a place for our state
 - Now it lives in (at least) two places..
   - And it's our job to keep it in sync(ish)
-
----
-
-# Congratulations! We are building distributed systems
-## And building distributed systems is hard...
-- Shared mutable state is hard
-- Across the network boundary it is almost impossible
-- For emphasis, see CORBA
+- Shared state is hard
+  - Shared mutable state is *really* hard
 
 ---
 
@@ -190,21 +156,13 @@ chris@launchscout.com
 - Browser innovation has absolutely exloded
   - to the point where developers are not keeping up
 
---
+---
 
-# A few highlights
+# An embarrassment of riches
 - Web components (custom HTML elements)
 - Websockets
 - Javascript maturation
 - Webassembly
-
----
-
-# An embarrassment of riches
-- It's impossible to keep up
-- Browsers are innovating faster then developers
-- New ideas based are not yet mainstream
-- Displacement is uncomfortable
 
 ---
 
@@ -255,9 +213,9 @@ chris@launchscout.com
 * Returns new state: ```["Get Milk"]```
 * Add a second item
   ```js
-  todoReducer({name: "Add item", item: "Speak at Momentum"}, ["Get Milk"])
+  todoReducer({name: "Add item", item: "Speak at CodeMash"}, ["Get Milk"])
   ```
-* Returns new state: ```["Get Milk", "Speak at Momentum"]```
+* Returns new state: ```["Get Milk", "Speak at CodeMash"]```
 
 ---
 
@@ -265,6 +223,7 @@ chris@launchscout.com
 - Simple and predictable
 - Easy to test
 - Well suited to async
+  - No shared mutable state!
 
 ---
 
@@ -417,20 +376,19 @@ end
 
 ---
 
-# Why Elixir?
+# The secret sauce: Elixir
 - Erlang/OTP: 25 years of distributed computing learning baked in
 - Extremely light-weight processes to manage state
-  - Each connection has their own process and state
+  - **Each connection has their own process and state**
 - High availabity, concurrent
 - Phoenix Channels
   - An thin abstraction over WebSockets
 
 ---
 
-# Why is this better?
+# Why is this approach better?
 - Higher level of abstraction
-- From request/response
-- To events and state
+- Events and state vs request/response
 - State lives on the server
   - Not shared
   - Immutable
@@ -505,7 +463,10 @@ end
 - Connects a template to a Livestate
 - Renders state
 - Dispatches events
-- Repeat...
+
+---
+
+# [Let's see it!](https://codepen.io/superchris-the-lessful/pen/ExMVrBo)
 
 ---
 
@@ -517,11 +478,7 @@ end
 
 ---
 
-# Let's write some code
-
----
-
-# Other other implementations
+# Other other implementations of this pattern
 - LiveView (Elixir)
 - LiveViewJS
 - Hotwire (kinda?)
@@ -547,11 +504,14 @@ end
 ---
 
 # Questions to ask yourself
-- Do I need a frameork?
+- Do I need a framework?
   - Could my browser do this instead?
 - Does my state need to be in two places?
 - Could I keep things simpler?
-- Is there a test for this?
+
+---
+
+# Thanks!
 
 ---
 
@@ -577,9 +537,5 @@ export const addTodo = wrap(function({ todo }, { todos }) {
 });
 
 ```
-
----
-
-# Thanks!
 
 ---
