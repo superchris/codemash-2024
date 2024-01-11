@@ -511,7 +511,8 @@ end
 
 ---
 
-# Thanks!
+## Thanks!
+![](bitly_qr.png)
 
 ---
 
